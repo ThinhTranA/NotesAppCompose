@@ -9,6 +9,9 @@
 # Java class files
 *.class
 
+# Jetbrain
+.idea
+
 # Generated files
 bin/
 gen/
