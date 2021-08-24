@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
@@ -15,6 +16,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.notesappcompose.routing.AppRouter
+import com.example.notesappcompose.routing.Screen
+import com.example.notesappcompose.ui.theme.JetNotesThemeSettings
 import com.example.notesappcompose.ui.theme.NotesAppComposeTheme
 
 @Composable
@@ -114,3 +118,79 @@ fun ScreenNavigationButtonPreview() {
         )
     }
 }
+
+@Composable
+private fun LightDarkThemeItem() {
+    Row(
+        Modifier
+            .padding(8.dp)
+    ) {
+        Text(
+            text = "Turn on dark theme",
+            style = MaterialTheme.typography.body2,
+            color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 8.dp)
+                .align(alignment = Alignment.CenterVertically)
+        )
+        Switch(checked = JetNotesThemeSettings.isDarkThemeEnabled,
+            onCheckedChange = {JetNotesThemeSettings.isDarkThemeEnabled = it},
+            modifier = Modifier
+                .padding(start = 8.dp, end = 8.dp)
+                .align(alignment = Alignment.CenterVertically)
+            )
+    }
+}
+
+@Preview
+@Composable
+fun LightDarkThemeItemPreview() {
+    NotesAppComposeTheme {
+        LightDarkThemeItem()
+    }
+}
+
+@Composable
+fun AppDrawer(
+    currentScreen: Screen,
+    closeDrawerAction: () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        AppDrawerHeader()
+
+        Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
+
+        ScreenNavigationButton(
+            icon = Icons.Filled.Home,
+            label = "Notes",
+            isSelected = currentScreen == Screen.Notes,
+            onClick = {
+                AppRouter.navigateTo(Screen.Notes)
+                closeDrawerAction()
+            }
+        )
+        ScreenNavigationButton(
+            icon = Icons.Filled.Delete,
+            label = "Trash",
+            isSelected = currentScreen == Screen.Trash,
+            onClick = {
+                AppRouter.navigateTo(Screen.Trash)
+                closeDrawerAction()
+            }
+        )
+        LightDarkThemeItem()
+    }
+}
+
+@Preview
+@Composable
+fun AppDrawerPreview() {
+    NotesAppComposeTheme {
+        AppDrawer(Screen.Notes, {})
+    }
+}
+
+
+
+
