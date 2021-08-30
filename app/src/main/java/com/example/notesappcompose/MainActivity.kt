@@ -3,40 +3,27 @@ package com.example.notesappcompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.notesappcompose.routing.Screen
-import com.example.notesappcompose.ui.components.AppDrawer
-import com.example.notesappcompose.ui.components.Note
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import com.example.notesappcompose.ui.screens.NotesScreen
 import com.example.notesappcompose.ui.theme.NotesAppComposeTheme
-import kotlinx.coroutines.launch
+import com.example.notesappcompose.viewmodel.MainViewModel
+import com.example.notesappcompose.viewmodel.MainViewModelFactory
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
+    private val viewModel: MainViewModel by viewModels(factoryProducer = {
+        MainViewModelFactory(
+            this,
+            (application as NotesApplication).dependencyInjector.repository
+        )
+    })
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             NotesAppComposeTheme {
-                val coroutineScope = rememberCoroutineScope()
-                val scaffoldState: ScaffoldState = rememberScaffoldState()
-
-                Scaffold(
-                    scaffoldState = scaffoldState,
-                    drawerContent = {
-                        AppDrawer(
-                            currentScreen = Screen.Notes,
-                            closeDrawerAction = {
-                                coroutineScope.launch {
-                                    scaffoldState.drawerState.close()
-                                }
-                            }
-                        )
-                    },
-                    content = {
-                        Note()
-                    }
-                )
+                NotesScreen(viewModel = viewModel)
             }
         }
     }
